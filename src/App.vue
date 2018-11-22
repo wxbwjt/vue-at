@@ -38,7 +38,7 @@
 
     <br />
 
-    <at-ta :members="members" name-key="name" v-model="text">
+    <at-ta :members="members" name-key="userName" :avoidEmail="false" v-model="text" @at="handleChunk" @insert="handleInsert">
       <!-- custom: with avatars -->
       <template slot="item" scope="s">
         <img :src="s.item.avatar">
@@ -71,7 +71,8 @@ let members = [
 members = members.map((v, i) => {
   return {
     avatar: `https://randomuser.me/api/portraits/men/${i % 5}.jpg`,
-    name: v
+    name: v,
+    userName: v+i
   }
 })
 
@@ -110,6 +111,14 @@ Playback - Video player.
     }
     data.html2 = data.html
     return data
+  },
+  methods: {
+    handleChunk(val) {
+      console.log(val)
+    },
+    handleInsert(val) {
+      console.log(val)
+    }
   }
 }
 </script>

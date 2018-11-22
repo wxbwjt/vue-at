@@ -54,11 +54,16 @@ export default {
       type: String,
       default: ''
     },
+    valueKey: {
+      type: String,
+      default: ''
+    },
     filterMatch: {
       type: Function,
-      default: (name, chunk, at) => {
+      default: (name, chunk, at, username) => {
         // match at lower-case
         return name.toLowerCase()
+          .indexOf(chunk.toLowerCase()) > -1 ||username.toLowerCase()
           .indexOf(chunk.toLowerCase()) > -1
       }
     },
@@ -142,6 +147,10 @@ export default {
     itemName (v) {
       const { nameKey } = this
       return nameKey ? v[nameKey] : v
+    },
+    itemValue (v) {
+      const { valueKey } = this
+      return valueKey ? v[valueKey] : v
     },
     isCur (index) {
       return index === this.atwho.cur
@@ -304,13 +313,14 @@ export default {
         if (!show) {
           this.closePanel()
         } else {
-          const { members, filterMatch, itemName } = this
+          const { members, filterMatch, itemName, itemValue } = this
           if (!keep && chunk) { // fixme: should be consistent with AtTextarea.vue
             this.$emit('at', chunk)
           }
           const matched = members.filter(v => {
             const name = itemName(v)
-            return filterMatch(name, chunk, at)
+            const username = itemValue(v)
+            return filterMatch(name, chunk, at, username)
           })
           if (matched.length) {
             this.openPanel(matched, range, index, at)
